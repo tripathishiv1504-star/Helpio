@@ -1,0 +1,62 @@
+name: Helpio CI/CD Pipeline
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+    branches: [main]
+
+jobs:
+  test-server:
+    name: Backend Tests & Quality
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout Code
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          cache: 'npm'
+          cache-dependency-path: 'server/package-lock.json'
+
+      - name: Install Server Dependencies
+        run: |
+          cd server
+          npm ci
+
+      - name: Run Test Suite (67 Tests)
+        run: |
+          cd server
+          npm test
+        env:
+          NODE_ENV: test
+          JWT_SECRET: ci-testing-jwt-secret-key-32chars
+          PORT: 5000
+
+  build-client:
+    name: Frontend Build & Verification
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout Code
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          cache: 'npm'
+          cache-dependency-path: 'client/package-lock.json'
+
+      - name: Install Client Dependencies
+        run: |
+          cd client
+          npm ci
+
+      - name: Build Vite SPA
+        run: |
+          cd client
+          npm run build
+        env:
+          VITE_API_URL: https://api.helpio.local
