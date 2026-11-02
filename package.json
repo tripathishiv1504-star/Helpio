@@ -1,0 +1,15 @@
+{
+  "name": "helpio",
+  "version": "1.0.0",
+  "private": true,
+  "description": "Hyperlocal Help & Workforce Platform",
+  "scripts": {
+    "install:all": "npm --prefix server install && npm --prefix client install",
+    "seed": "npm --prefix server run seed",
+    "test": "npm --prefix server test",
+    "build": "npm --prefix client run build",
+    "start": "npm --prefix server start",
+    "dev:server": "npm --prefix server run dev",
+    "dev:client": "npm --prefix client run dev"
+  }
+}

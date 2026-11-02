@@ -1,0 +1,36 @@
+version: '3.8'
+
+services:
+  mongodb:
+    image: mongo:7.0
+    container_name: helpio-mongo
+    restart: always
+    ports:
+      - "27017:27017"
+    volumes:
+      - mongo-data:/data/db
+    environment:
+      MONGO_INITDB_DATABASE: helpio
+
+  server:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: helpio-server
+    restart: always
+    ports:
+      - "5000:5000"
+    environment:
+      PORT: 5000
+      NODE_ENV: production
+      MONGODB_URI: mongodb://mongodb:27017/helpio
+      JWT_SECRET: production_jwt_super_secret_key_helpio_2026
+      COMMISSION_PERCENT: 10
+      PAYMENT_PROVIDER: simulated
+      ADMIN_EMAIL: admin@helpio.local
+      ADMIN_PASSWORD: AdminPassword123!
+    depends_on:
+      - mongodb
+
+volumes:
+  mongo-data:
